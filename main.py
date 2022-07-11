@@ -2,10 +2,14 @@
 # Trabalho 1 de Segurança Computacional
 # Alunos:
 # * Gabriel Rodrigues Pacheco - 17/0058280
-# * Theo
-# TODO: Colocar o nome e matricula do Theo
+# * Théo Henrique Gallo - 17/0080781
 
 import re
+
+# Lista de probabilidades em porcentagem
+# A = 0, B = 1, ...
+prob_por = [14.63, 1.04, 3.88, 4.99, 12.57, 1.02, 1.3, 1.28, 6.18, 0.4, 0.02, 2.78, 4.74, 5.05, 10.73, 2.52, 1.2, 6.53, 7.81, 4.34, 4.63, 1.67, 0.01, 0.21, 0.01, 0.47]
+prob_ing = [8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153, 0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056, 2.758, 0.978, 2.36, 0.15, 1.974, 0.074]
 
 
 # Funcao chamada ao se selecionar a funcao de criptografar (modo 1) ou decriptografar (modo 2). Ela e responsavel por
@@ -68,8 +72,21 @@ def criptografar(msg, key, modo):
 
 
 def lista_quebrar():
+    msg = ""
+    while msg == "":
+        msg = input("Qual mensagem deve ser decriptografada mesmo sem a chave?: ")
+        msg = msg.upper()
+        regex = re.compile('[^A-Z ]')
+        msg = regex.sub('', msg)
+
+
+    # a = 0
+    # for prob in prob_ing:
+    #     print(chr(ord('A')+a))
+    #     print(prob)
+    #     a += 1
+
     # TODO: Criar funcao de quebrar
-    print("Oi, ainda em construção")
 
 
 # Usamos o comeco do codigo para que o usuario escolha qual operacao deve ser feita: Cifrar, decifrar ou quebrar a cifra
@@ -87,4 +104,4 @@ if __name__ == '__main__':
     elif resposta == '2':
         lista_criptografar(2)
     else:
-        pass
+        lista_quebrar()
