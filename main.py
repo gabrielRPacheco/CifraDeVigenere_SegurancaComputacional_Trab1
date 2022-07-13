@@ -71,7 +71,12 @@ def criptografar(msg, key, modo):
     print(resultado)
 
 
+def sort(sub, indice):
+    return sorted(sub, key=lambda x: x[indice])
+
+
 def lista_quebrar():
+    # Recebe do usuario a msg a ser decifrada
     msg = ""
     while msg == "":
         msg = input("Qual mensagem deve ser decriptografada mesmo sem a chave?: ")
@@ -79,12 +84,67 @@ def lista_quebrar():
         regex = re.compile('[^A-Z ]')
         msg = regex.sub('', msg)
 
+    # Separa a msg em trios
+    trios = []
+    for i in range(len(msg)):
+        if (i+3) <= len(msg):
+            trios.append(msg[i]+msg[i+1]+msg[i+2])
 
-    # a = 0
-    # for prob in prob_ing:
-    #     print(chr(ord('A')+a))
-    #     print(prob)
-    #     a += 1
+    # Procura pela repeticao dos trios na msg, conta as ocorrencias
+    distancia_trios = []
+    ocorrencias_trios = []
+    for i in range(len(trios)):
+        count = trios.count(trios[i])
+        if count > 1:
+            ocorrencias_trios.append([trios[i], i])
+    ocorrencias_trios = sort(ocorrencias_trios, 0)
+    # Calcula a distancia entre as ocorrencias
+    for i in range(len(ocorrencias_trios)):
+        for j in range(len(ocorrencias_trios)):
+            if i != j and ocorrencias_trios[i][0] == ocorrencias_trios[j][0]:
+                distancia = ocorrencias_trios[j][1]-ocorrencias_trios[i][1]
+                if distancia > 0:
+                    distancia_trios.append(distancia)
+    distancia_trios = sorted(distancia_trios)
+
+    # Realiza a fatoracao
+    # TODO: Isso esta certo?
+    fatores = []
+    for i in range(len(distancia_trios)):
+        for j in range(distancia_trios[i]):
+            if j > 0 and distancia_trios[i] % (j + 1) == 0:
+                fatores.append(j+1)
+    fatores = sorted(fatores)
+
+    # Calcula a probabilidade de tamanho de chave
+    tamanhos_esperados = []
+    for numero in fatores:
+        if [numero, fatores.count(numero)] not in tamanhos_esperados:
+            tamanhos_esperados.append([numero, fatores.count(numero)])
+    tamanhos_esperados = sort(tamanhos_esperados, 1)
+    tamanhos_esperados = list(reversed(tamanhos_esperados))
+    print(tamanhos_esperados)
+
+    # Apresenta o resultado para o usuario escolher o tamanho da chave
+    total_repeticoes = 0
+    for repeticao in tamanhos_esperados:
+        total_repeticoes += repeticao[1]
+    print(total_repeticoes)
+    print(f"+----------------+----------------+")
+    print(f"+ Chave sugerida +      Chances   +")
+    print(f"+----------------+----------------+")
+    for repeticao in tamanhos_esperados:
+        print(f"+          {'% 3.0f'%(repeticao[0])}   +        {'%0.3f'%(repeticao[1]/total_repeticoes)}   +")
+    print(f"+----------------+----------------+")
+    tam_senha_escolhido = 0
+    valid = False
+    while not valid:
+        try:
+            tam_senha_escolhido = int(input('Escolha um número: '))
+            valid = True
+        except ValueError:
+            print('Por favor, escolha um número válido')
+    print(tam_senha_escolhido)
 
     # TODO: Criar funcao de quebrar
 
