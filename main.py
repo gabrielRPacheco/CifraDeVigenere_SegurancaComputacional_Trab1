@@ -146,6 +146,17 @@ def lista_quebrar():
             print('Por favor, escolha um número válido')
     print(tam_senha_escolhido)
 
+    # Separar a msg em segmentos com base no tamanho de senha escolhido
+    frequencia = []
+    for x in range (tam_senha_escolhido):
+        frequencia.append(list())
+    count = 0
+    for i in range(len(msg)):
+        frequencia[count].append(msg[i])
+        count += 1
+        if count >= tam_senha_escolhido:
+            count = 0
+    print(frequencia)
     # TODO: Criar funcao de quebrar
 
 
