@@ -75,6 +75,20 @@ def sort(sub, indice):
     return sorted(sub, key=lambda x: x[indice])
 
 
+# Funcao usada para apresentar as probabilidades de cada letra na msg
+def print_probabilidades(probabilidade_1, probabilidade_2, probabilidade_3, total=10, maximo=10, letra_estudo='A', letra_base='A', suffix='', decimals=2, length=25, fill='█'):
+    percent_1 = ("{0:." + str(decimals) + "f}").format(100 * (probabilidade_1 / float(total)))
+    percent_2 = ("{0:." + str(decimals) + "f}").format(100 * (probabilidade_2 / float(total)))
+    percent_3 = ("{0:." + str(decimals) + "f}").format(100 * (probabilidade_3 / float(total)))
+    filled_length_1 = int(length * probabilidade_1 // maximo)
+    filled_length_2 = int(length * probabilidade_2 // maximo)
+    filled_length_3 = int(length * probabilidade_3 // maximo)
+    bar_1 = fill * filled_length_1 + '-' * (length - filled_length_1)
+    bar_2 = fill * filled_length_2 + '-' * (length - filled_length_2)
+    bar_3 = fill * filled_length_3 + '-' * (length - filled_length_3)
+    print('\r+ %s |%s| %s%% %s  +  %s |%s| %s%% %s + |%s| %s%% %s +' % (letra_estudo, bar_1, percent_1, suffix, letra_base, bar_2, percent_2, suffix, bar_3, percent_3, suffix))
+
+
 def lista_quebrar():
     # Recebe do usuario a msg a ser decifrada
     msg = ""
@@ -123,13 +137,11 @@ def lista_quebrar():
             tamanhos_esperados.append([numero, fatores.count(numero)])
     tamanhos_esperados = sort(tamanhos_esperados, 1)
     tamanhos_esperados = list(reversed(tamanhos_esperados))
-    print(tamanhos_esperados)
 
     # Apresenta o resultado para o usuario escolher o tamanho da chave
     total_repeticoes = 0
     for repeticao in tamanhos_esperados:
         total_repeticoes += repeticao[1]
-    print(total_repeticoes)
     print(f"+----------------+----------------+")
     print(f"+ Chave sugerida +      Chances   +")
     print(f"+----------------+----------------+")
@@ -148,7 +160,7 @@ def lista_quebrar():
 
     # Separar a msg em segmentos com base no tamanho de senha escolhido
     segmento_msg = []
-    for x in range (tam_senha_escolhido):
+    for x in range(tam_senha_escolhido):
         segmento_msg.append(list())
     count = 0
     for i in range(len(msg)):
@@ -160,12 +172,56 @@ def lista_quebrar():
     # Calcula a frequencia de cada letra em cada segmento
     freq_segmentos = [[0] * 26 for i in range(tam_senha_escolhido)]
     for i in range(tam_senha_escolhido):
-        for j in range (26):
-            freq_segmentos[i][j] = segmento_msg[i].count(chr(ord('A')+j))/len(segmento_msg[i])
-    print(freq_segmentos)
+        for j in range(len(freq_segmentos[0])):
+            freq_segmentos[i][j] = segmento_msg[i].count(chr(ord('A')+j))/len(segmento_msg[i]) * 100
 
-
-    # TODO: Criar funcao de quebrar
+    # Vamos permitir ao usuario ver as probabilidades calculadas e alinhar a chave
+    frequencia_maxima_lista = list()
+    frequencia_maxima_lista.append(max(prob_por))
+    frequencia_maxima_lista.append(max(prob_ing))
+    for i in range(tam_senha_escolhido):
+        frequencia_maxima_lista.append(max(freq_segmentos[i]))
+    frequencia_maxima = max(frequencia_maxima_lista)
+    senha = list()
+    for i in range(tam_senha_escolhido):
+        senha.append(0)
+    for j in range(tam_senha_escolhido):
+        while True:
+            senha_letras = ''
+            for i in range(tam_senha_escolhido):
+                senha_letras += chr(ord('A') + senha[i])
+            print(f"Senha atual: {senha_letras}")
+            seta = "             " + (' ' * j) + "^"
+            print(seta)
+            print(f"Posicao atual: {j}")
+            print()
+            print(f"+---------------------------------------+---------------------------------------+-------------------------------------+")
+            print(f"+   Frequência msg                      +   Frequência por                      +   Frequência ing                    +")
+            print(f"+---------------------------------------+---------------------------------------+-------------------------------------+")
+            for i in range(len(freq_segmentos[0])):
+                posicao = i + int(senha[j])
+                if posicao >= 26:
+                    posicao -= 26
+                # print_probabilidades(probabilidade_1, probabilidade_2, probabilidade_3, total=10, maximo=10, letra_estudo='A', letra_base='A', suffix='', decimals=2, length=25, fill='█')
+                print_probabilidades(freq_segmentos[j][posicao], prob_por[i], prob_ing[i], 100, frequencia_maxima, chr(ord('A')+posicao), chr(ord('A')+i))
+            print(f"+---------------------------------------+---------------------------------------+-------------------------------------+")
+            entrada = input("Digite 'S' para seguir ou um numero inteiro positivo para mover a roda? ")
+            if entrada == 'S':
+                break
+            if entrada.isalnum():
+                resposta = int(entrada)
+                senha[j] = resposta + senha[j]
+                if int(senha[j]) >= 26:
+                    senha[j] -= 26
+                elif int(senha[j]) < 0:
+                    senha[j] += 26
+    senha_letras = ''
+    for i in range(tam_senha_escolhido):
+        senha_letras += chr(ord('A') + senha[i])
+    print(f"Senha encontrada: {senha_letras}")
+    print(f"Criptograma de entrada: {msg}")
+    print(f"Mensagem resultante:")
+    criptografar(msg, senha_letras, 2)
 
 
 # Usamos o comeco do codigo para que o usuario escolha qual operacao deve ser feita: Cifrar, decifrar ou quebrar a cifra
