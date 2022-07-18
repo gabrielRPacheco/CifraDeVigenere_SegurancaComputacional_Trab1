@@ -209,8 +209,7 @@ def lista_quebrar():
             if entrada == 'S':
                 break
             if entrada.isalnum():
-                resposta = int(entrada)
-                senha[j] = resposta + senha[j]
+                senha[j] = int(entrada) + senha[j]
                 if int(senha[j]) >= 26:
                     senha[j] -= 26
                 elif int(senha[j]) < 0:
@@ -220,7 +219,6 @@ def lista_quebrar():
         senha_letras += chr(ord('A') + senha[i])
     print(f"Senha encontrada: {senha_letras}")
     print(f"Criptograma de entrada: {msg}")
-    print(f"Mensagem resultante:")
     criptografar(msg, senha_letras, 2)
 
 
