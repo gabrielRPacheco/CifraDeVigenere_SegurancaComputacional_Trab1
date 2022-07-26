@@ -20,9 +20,9 @@ def lista_criptografar(modo):
     key = ""
     while msg == "":
         if modo == 1:
-            msg = input("Qual mensagem deve ser criptografada?: ")
+            msg = input("Qual mensagem deve ser criptografada? (Apenas letras de A a Z e espaços serão aceitos): ")
         else:
-            msg = input("Qual mensagem deve ser decriptografada?: ")
+            msg = input("Qual mensagem deve ser decriptografada? (Apenas letras de A a Z e espaços serão aceitos): ")
         msg = msg.upper()
         regex = re.compile('[^A-Z ]')
         msg = regex.sub('', msg)
