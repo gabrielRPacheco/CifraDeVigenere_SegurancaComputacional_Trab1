@@ -122,7 +122,6 @@ def lista_quebrar():
     distancia_trios = sorted(distancia_trios)
 
     # Realiza a fatoracao
-    # TODO: Isso esta certo?
     fatores = []
     for i in range(len(distancia_trios)):
         for j in range(distancia_trios[i]):
