@@ -58,8 +58,8 @@ def criptografar(msg, key, modo):
                 letra_crip -= 26
             if letra_crip < ord('A'):
                 letra_crip += 26
-        # Percorre a chave ate seu fim, ao chegar ao fim recomeca
-        count_key += 1
+            # Percorre a chave ate seu fim, ao chegar ao fim recomeca
+            count_key += 1
         if count_key == len(key):
             count_key = 0
         # Adiciona o resultado a string de saida
